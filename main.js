@@ -10,13 +10,14 @@
         this.game_over = false;
         this.bars =[];
         this.ball = null;
+        this.playing = false;
 
     }
 
     self.Board.prototype ={
         get elements(){
 
-            let elements = this.bars;
+            var elements = this.bars.map(function(bar){return bar;});
             elements.push(this.ball)
             return elements;
         }
@@ -33,9 +34,19 @@
         this.speed_y = 0;
         this.speed_x = 3;
         this.board = board;
+        this.direction = 1;
         board.ball = this;
         this.kind = "circle"
 
+    }
+
+    //Creamos el prototype para controlar los movimeintos de la pelota #NUEVO
+    self.Ball.prototype ={
+        move: function(){
+            this.x += (this.speed_x * this.direction)
+            this.y += (this.speed_y )
+
+        }
     }
 
 })();
@@ -98,8 +109,15 @@
         },
 
         play: function(){
-            this.clean();
-            this.draw();
+
+            if (this.board.playing) {
+                this.clean();
+                this.draw();
+                this.board.ball.move();
+                
+            }
+
+            
         }
     }
     //Metodo que dibuja los elementos
@@ -128,7 +146,7 @@ var bar = new Bar(20,100,40,100,board)
 var bar2 = new Bar(735,100,40,100,board)
 var canvas = document.getElementById("canvas")
 var board_view = new BoardView(canvas,board)
-var ball = new Ball(350,100,10,board)
+var ball = new Ball(350,100,10,board);
 
 
 
@@ -138,27 +156,39 @@ var ball = new Ball(350,100,10,board)
 
 //Evento que captura el moviemiento de las teclas, para mover las barras
 document.addEventListener("keydown",function(ev){
-    ev.preventDefault();
     
-    if(ev.KeyCode ==38){
+    
+    if(ev.keyCode ==38){
+        ev.preventDefault();
         bar.up();
     }
-    else if(ev.KeyCode==40){
+    else if(ev.keyCode==40){
+        ev.preventDefault();
         bar.down();
     }
-    else if(ev.KeyCode ===87){
+    else if(ev.keyCode ===87){
+        ev.preventDefault();
         bar2.up();
     }
-    else if(ev.KeyCode===83){
+    else if(ev.keyCode===83){
+        ev.preventDefault();
         bar2.down();
+    }
+    else if(ev.keyCode===32){
+        ev.preventDefault();
+        board.playing = !board.playing;
     }
     console.log(""+bar2)
 });
 
+board_view.draw();
+
 //agrgamos moviemiento a las barras - NUEVO
 window.requestAnimationFrame(controller);
 
-
+setTimeout(function(){
+    ball.direction =-1;
+},4000);
 /*Funcion principal  que se muestra cuando se carga la ventana*/
 function controller(){
     
