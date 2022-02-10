@@ -36,16 +36,22 @@
         this.board.bars.push(this);
 
         this.kind = "rectangle";
+        this.speed =10; //Velocidad de las barras
 
     }
 
     self.Bar.prototype ={
         //funciones para mover la barra
         down: function(){
+            this.y += this.speed;
 
         },
         up: function(){
+            this.y -= this.speed;
 
+        },
+        toString: function(){
+            return "x: "+this.x +" y: "+this.y;
         }
     }
 })();
@@ -86,15 +92,29 @@
 
 })()
 
+let board = new Board(800,400)
+var bar = new Bar(20,100,40,100,board)
+var bar = new Bar(735,100,40,100,board)
+let canvas = document.getElementById("canvas")
+let board_view = new BoardView(canvas,board)
+
+//Evento que captura el moviemiento de las teclas, para mover las barras
+document.addEventListener("keydown",function(ev){
+    
+    if(ev.KeyCode ==38){
+        bar.up();
+    }
+    else if(ev.KeyCode==40){
+        bar.down();
+    }
+    console.log(bar)
+});
+
 window.addEventListener("load",main);
 
 /*Funcion principal  que se muestra cuando se carga la ventana*/
 function main(){
-    let board = new Board(800,400)
-    var bar = new Bar(20,100,40,100,board)
-    var bar = new Bar(735,100,40,100,board)
-    let canvas = document.getElementById("canvas")
-    let board_view = new BoardView(canvas,board)
+    
 
     board_view.draw()
 
